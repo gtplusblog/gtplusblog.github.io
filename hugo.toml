@@ -11,8 +11,7 @@
 # 网站标题
 title = "GUTUN的心"
 # Hostname (and path) to the root
-baseURL = "https://gutun.github.io/"
-# baseURL = "https://leegical.github.io/"
+baseURL = "https://gtplusblog.github.io/"
 # 更改使用 Hugo 构建网站时使用的默认主题
 theme = ["FixIt"]
 # determines default content language ["en", "zh-cn", "fr", "pl", ...]
