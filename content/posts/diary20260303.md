@@ -30,9 +30,6 @@ math: false
 lightgallery: false
 password:
 message:
-repost:
-  enable: true
-  url:
 
 # See details front matter: https://fixit.lruihao.cn/documentation/content-management/introduction/#front-matter
 ---

@@ -30,9 +30,6 @@ math: false
 lightgallery: false
 password:
 message:
-repost:
-  enable: true
-  url:
 
 # See details front matter: https://fixit.lruihao.cn/documentation/content-management/introduction/#front-matter
 ---
@@ -40,11 +37,11 @@ repost:
 <!--more-->
 
 ## 前言
-之前在大作业里想要用到课上学到的有序样本聚类方法，但是在网上居然没有找到有关的包，唯一找到yihui在2005年写的[远古程序](https://yihui.org/cn/2005/10/17-26-00/)，顺便了解了一下R语言的前世今生。   
-搜到yihui的网页就顺便看了看他的简历，对这位之前只在研究RMarkdown时看过他的文档的大神的经历实在敬佩不已。2005年时yihui正也是大三学生，这让我也有了自己写函数的勇气。虽然时过境迁，编程已经比15年前普及太多，编写这么一个函数远用不了2天，但也算是对我自己的一个激励吧。   
+之前在大作业里想要用到课上学到的有序样本聚类方法，但是在网上居然没有找到有关的包，唯一找到yihui在2005年写的[远古程序](https://yihui.org/cn/2005/10/17-26-00/)，顺便了解了一下R语言的前世今生。
+搜到yihui的网页就顺便看了看他的简历，对这位之前只在研究RMarkdown时看过他的文档的大神的经历实在敬佩不已。2005年时yihui正也是大三学生，这让我也有了自己写函数的勇气。虽然时过境迁，编程已经比15年前普及太多，编写这么一个函数远用不了2天，但也算是对我自己的一个激励吧。
 
 ## 程序及说明
-程序的思想主要来自于张润楚的《多元统计分析》10.5节，在此就不多做介绍了。   
+程序的思想主要来自于张润楚的《多元统计分析》10.5节，在此就不多做介绍了。
 ```r
 OrdinalCluster <- function(x, K = 0, D = NULL, pic = FALSE){
   if(!is.data.frame(x)){

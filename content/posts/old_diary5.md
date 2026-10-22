@@ -30,9 +30,6 @@ math: false
 lightgallery: false
 password:
 message:
-repost:
-  enable: true
-  url:
 
 # See details front matter: https://fixit.lruihao.cn/documentation/content-management/introduction/#front-matter
 ---
@@ -47,14 +44,14 @@ repost:
 
 
 > **观日**
-> 
-> 迷雾散去  
-> 我来到了云海之上  
-> 却发现  
-> 云海上人海缭绕  
-> 不远处有石探海  
-> 有人更在阳光之上  
-> 
+>
+> 迷雾散去
+> 我来到了云海之上
+> 却发现
+> 云海上人海缭绕
+> 不远处有石探海
+> 有人更在阳光之上
+>
 > *2017年7月17日*
 
 
