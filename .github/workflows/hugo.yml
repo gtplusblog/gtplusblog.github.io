@@ -34,6 +34,10 @@ jobs:
       - name: Build
         run: hugo --minify
 
+      # 4.4：source map 只对开发者有用，不发布到线上（约 420 KB）
+      - name: Strip source maps
+        run: find ./public -type f -name '*.map' -delete
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

@@ -1,0 +1,132 @@
+{{- /*
+  本文件覆盖 themes/FixIt/layouts/_partials/single/footer.html（FixIt 0.4.0-beta）。
+  改动（3.6）：去掉正文末尾那个「更新于 <日期>」小标记 ——
+             文章头的 meta 行已经显示「发布于 / 更新于」，页脚再显示一次是重复噪音。
+             许可协议（license）与源码链接等其余内容保持原样。
+  升级主题后请与 themes/FixIt/layouts/_partials/single/footer.html 做一次 diff 合并。
+*/ -}}
+{{- $params := partial "function/params.html" -}}
+
+{{- /*  Git info  */ -}}
+{{- $gitRepo := "" -}}
+{{- $blobURL := "" -}}
+{{- $sourceURL := "" -}}
+{{- $editURL := "" -}}
+{{- $reportURL := "" -}}
+{{- with .Site.Params.gitInfo -}}
+  {{- if .Repo -}}
+    {{- $gitRepo = strings.TrimSuffix "/" .Repo -}}
+    {{- $blobURL = printf "%v/blob/%v/%v/{path}" $gitRepo .Branch .Dir -}}
+    {{- $editURL = printf "%v/edit/%v/%v/{path}" $gitRepo .Branch .Dir -}}
+    {{- $reportURL = printf "%v/issues/new?%v" $gitRepo .IssueTpl -}}
+  {{- end -}}
+{{- end -}}
+
+<div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      {{- /* 3.6：此处原为「更新于 <日期>」标记，已移除；文章头 meta 行已显示发布于/更新于 */ -}}
+      {{- if not $params.password -}}
+        {{- with $params.license | string -}}
+          <div class="post-info-license">
+            <span>{{ . | safeHTML }}</span>
+          </div>
+        {{- end -}}
+      {{- end -}}
+    </div>
+    {{- if not $params.password -}}
+      <div class="post-info-line">
+        <div class="post-info-md">
+          {{- $linkOptions := slice -}}
+          {{- if $params.LinkToMarkdown -}}
+            {{- with .OutputFormats.Get "markdown" -}}
+              {{- $options := dict "Class" "link-to-markdown" "Destination" .RelPermalink "Title" (T "single.readMarkdown") "Content" (T "single.readMarkdown") -}}
+              {{- $linkOptions = $linkOptions | append $options -}}
+            {{- end -}}
+          {{- end -}}
+          {{- if $params.LinkToSource | and $gitRepo -}}
+            {{- $link := replace $blobURL "{path}" $.File.Path -}}
+            {{- $sourceURL = $params.sourceURL | default (add $link "?plain=1") -}}
+            {{- $options := dict "Class" "link-to-source" "Destination" $sourceURL "Title" (T "single.viewSource") "Content" (T "single.viewSource") -}}
+            {{- $linkOptions = $linkOptions | append $options -}}
+          {{- end -}}
+          {{- if $params.LinkToEdit | and $gitRepo -}}
+            {{- $link := replace $editURL "{path}" $.File.Path -}}
+            {{- $editURL = $params.editURL | default $link -}}
+            {{- $options := dict "Class" "link-to-edit" "Destination" $editURL "Title" (T "single.editThisPage") "Content" (T "single.editThisPage") -}}
+            {{- $linkOptions = $linkOptions | append $options -}}
+          {{- end -}}
+          {{- if $params.LinkToReport | and $gitRepo -}}
+            {{- $link := replace $reportURL "{title}" ($.Title | urlquery) -}}
+            {{- $link = replace $link "{URL}" $.Permalink -}}
+            {{- $link = replace $link "{sourceURL}" $sourceURL -}}
+            {{- $options := dict "Class" "link-to-report" "Destination" $link "Title" (T "single.reportIssue") "Content" (T "single.reportIssue") -}}
+            {{- $linkOptions = $linkOptions | append $options -}}
+          {{- end -}}
+          {{- if $params.LinkToVscode | and hugo.IsServer | and (not $.File.IsContentAdapter) -}}
+            {{- $link := printf "vscode://file/%v" $.File.Filename -}}
+            {{- $options := dict "Class" "link-to-vscode" "Destination" $link "Title" (T "single.openInEditor") "Content" (T "single.openInEditor") -}}
+            {{- $linkOptions = $linkOptions | append $options -}}
+          {{- end -}}
+          {{- range $linkOptions -}}
+            <span>{{ partial "plugin/link.html" . }}</span>
+          {{- end -}}
+        </div>
+        <div class="post-info-share">
+          <span>
+            {{- partial "plugin/share.html" . -}}
+          </span>
+        </div>
+      </div>
+    {{- end -}}
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags">
+      {{- $tagTerms := .GetTerms "tags" -}}
+      {{- if $tagTerms -}}
+        {{- dict "Class" "fa-solid fa-tags fa-fw me-1" | partial "plugin/icon.html" -}}
+        {{- range $tagTerms -}}
+          {{- $href := partial "function/escapeurl.html" .RelPermalink -}}
+          {{- $title := printf "%v - %v" (T "tags") .LinkTitle -}}
+          <a href="{{ $href }}" class="post-tag" title="{{ $title }}">{{ .LinkTitle }}</a>
+        {{- end -}}
+      {{- end -}}
+    </section>
+    <section>
+      {{- $relLangURL := relLangURL "" -}}
+      <span><a href="javascript:void(0);" onclick="window.history.back();">{{ T "single.back" }}</a></span>&nbsp;|&nbsp;<span><a href="{{ $relLangURL }}">{{ T "single.home" }}</a></span>
+    </section>
+  </div>
+
+  {{- $navigation := .Site.Params.navigation -}}
+  <div class="post-nav">
+    {{- $pages := .Site.Store.Get "mainSectionPages" -}}
+    {{- $prev := $pages.Prev . -}}
+    {{- $next := $pages.Next . -}}
+    {{- /* Show the post navigation in section pages */ -}}
+    {{- if $navigation.inSection -}}
+      {{- $prev = .PrevInSection -}}
+      {{- $next = .NextInSection -}}
+    {{- end -}}
+    {{- /* Reverse the next/previous post navigation order */ -}}
+    {{- if $navigation.reverse -}}
+      {{- $prev = $pages.Next . -}}
+      {{- $next = $pages.Prev . -}}
+    {{- end -}}
+    {{- with $prev -}}
+      {{- $capitalizeTitles := .Param "capitalizeTitles" -}}
+      <a href="{{ .RelPermalink }}" class="post-nav-item" rel="prev" title="{{ cond $capitalizeTitles (title .LinkTitle) .LinkTitle }}">
+        {{- dict "Class" "fa-solid fa-angle-left fa-fw" | partial "plugin/icon.html" -}}
+        {{- cond $capitalizeTitles (title .LinkTitle) .LinkTitle -}}
+      </a>
+    {{- end -}}
+    {{ with $next }}
+      {{- $capitalizeTitles := .Param "capitalizeTitles" -}}
+      <a href="{{ .RelPermalink }}" class="post-nav-item" rel="next" title="{{ cond $capitalizeTitles (title .LinkTitle) .LinkTitle }}">
+        {{- cond $capitalizeTitles (title .LinkTitle) .LinkTitle -}}
+        {{- dict "Class" "fa-solid fa-angle-right fa-fw" | partial "plugin/icon.html" -}}
+      </a>
+    {{- end -}}
+  </div>
+</div>
