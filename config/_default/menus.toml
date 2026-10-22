@@ -1,0 +1,48 @@
+# -------------------------------------------------------------------------------------
+# 导航菜单
+# See: https://fixit.lruihao.cn/documentation/basics/#menu-configuration
+# 说明：config/_default/menus.toml 使用「菜单名作为数组名」的写法（[[main]]）。
+# -------------------------------------------------------------------------------------
+
+[[main]]
+  identifier = "posts"
+  # 名称前附加内容（支持 HTML），例如图标
+  pre = ""
+  # 名称后附加内容（支持 HTML），例如图标
+  post = ""
+  name = "文章"
+  url = "/posts/"
+  # 悬停时显示的提示文字
+  title = ""
+  weight = 1
+  [main.params]
+    # 为该菜单项附加 CSS 类
+    class = ""
+    # 是否把该项当作草稿（行为类似草稿文章）
+    draft = false
+    # Font Awesome 图标
+    icon = "fa-solid fa-archive"
+    # 菜单项类型，可选 ["mobile", "desktop"]，留空表示两者都显示
+    type = ""
+
+[[main]]
+  identifier = "categories"
+  pre = ""
+  post = ""
+  name = "分类"
+  url = "/categories/"
+  title = ""
+  weight = 2
+  [main.params]
+    icon = "fa-solid fa-th"
+
+[[main]]
+  identifier = "tags"
+  pre = ""
+  post = ""
+  name = "标签"
+  url = "/tags/"
+  title = ""
+  weight = 3
+  [main.params]
+    icon = "fa-solid fa-tags"

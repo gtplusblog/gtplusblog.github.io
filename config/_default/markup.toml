@@ -1,0 +1,42 @@
+# -------------------------------------------------------------------------------------
+# Markup related configuration in Hugo
+# See: https://gohugo.io/getting-started/configuration-markup/
+# -------------------------------------------------------------------------------------
+
+# Hugo 解析文档的配置
+  # 语法高亮设置 (https://gohugo.io/content-management/syntax-highlighting)
+  [highlight]
+    ################## 必要的配置 ##################
+    # https://github.com/hugo-fixit/FixIt/issues/43
+    codeFences = true
+    lineNos = true
+    lineNumbersInTable = true
+    noClasses = false
+    ################## 必要的配置 ##################
+    guessSyntax = true
+  # Goldmark 是 Hugo 0.60 以来的默认 Markdown 解析库
+  [goldmark]
+    [goldmark.extensions]
+      definitionList = true
+      footnote = true
+      linkify = true
+      strikethrough = true
+      table = true
+      taskList = true
+      typographer = true
+    [goldmark.renderer]
+      # 3.10.5：单个换行即换行，诗不再依赖行尾两个空格
+      hardWraps = true
+      # 是否在文档中直接使用 HTML 标签
+      unsafe = true
+    # 让数学定界符原样透传（FixIt/KaTeX/MathJax 需要）
+    [goldmark.extensions.passthrough]
+      enable = true
+    [goldmark.extensions.passthrough.delimiters]
+      block = [['\\[', '\\]'], ['$$', '$$']]
+      inline = [['\\(', '\\)'], ['$', '$']]
+
+  # Table Of Contents settings
+  [tableOfContents]
+    startLevel = 2
+    # endLevel = 4
