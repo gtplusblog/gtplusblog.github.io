@@ -1,0 +1,255 @@
+// ==============================
+// 自定义样式 · 动态（Moments）
+// -------------------------------------------------------------------------------------
+// 数据：data/moments/<年份>.json    模板：layouts/_partials/moments/*
+// 首页：layouts/home.html（本文件负责两栏 / 单栏切换）
+// 文章页：由 [params.customPartials] aside 挂到左栏
+// ==============================
+
+// ---------- 首页两栏布局 ----------
+.fi-home-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+
+  // 没有动态时退化为原来的单栏（.page 自己带百分比宽度）
+  &.has-moments {
+    .fi-moments-side {
+      flex: 0 0 300px;
+    }
+  }
+}
+
+.fi-moments-side {
+  position: sticky;
+  top: calc(#{$header-height} + var(#{$rootPrefix}breadcrumb-height));
+  width: 300px;
+  min-width: 0;
+}
+
+// ---------- 卡片（首页侧栏 + 文章页左栏） ----------
+.fi-moments-card {
+  padding: 0.65rem 0.8rem 0.45rem;
+  border: 1px solid var(#{$rootPrefix}global-border-color);
+  border-radius: $global-border-radius;
+  background-color: darken($global-background-color, 2.5%);
+  @include overflow-wrap(break-word);
+
+  [data-theme='dark'] & {
+    background-color: lighten($global-background-color-dark, 2.5%);
+  }
+}
+
+.fi-moments-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(#{$rootPrefix}global-border-color);
+}
+
+.fi-moments-title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  i {
+    font-size: 0.8em;
+    color: var(#{$rootPrefix}global-link-hover-color);
+  }
+}
+
+.fi-moments-more {
+  font-size: 0.72rem;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+  white-space: nowrap;
+
+  &:hover {
+    color: var(#{$rootPrefix}global-link-hover-color);
+  }
+}
+
+.fi-moments-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fi-moments-item {
+  & + .fi-moments-item {
+    border-top: 1px dashed var(#{$rootPrefix}global-border-color);
+  }
+
+  .fi-moments-link {
+    display: block;
+    padding: 0.45rem 0 0.35rem;
+    color: inherit;
+
+    &:hover .fi-moments-text {
+      color: var(#{$rootPrefix}global-link-hover-color);
+    }
+  }
+}
+
+.fi-moments-text {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  white-space: pre-line;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+
+.fi-moments-meta {
+  margin-top: 0.15rem;
+  font-size: 0.7rem;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+
+  time {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// ---------- /moments/ 页面 ----------
+.fi-moments-summary {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+
+  a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+.fi-moments-feed {
+  margin-top: 0.5rem;
+}
+
+.fi-moments-empty {
+  padding: 2rem 0;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+  font-size: 0.9rem;
+}
+
+.fi-moments-year {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 1.8rem 0 0.2rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(#{$rootPrefix}global-border-color);
+  }
+
+  em {
+    order: 2;
+    font-size: 0.72rem;
+    font-style: normal;
+    font-weight: 400;
+    color: var(#{$rootPrefix}global-font-secondary-color);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.fi-moments-entry {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  gap: 0.9rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px dashed var(#{$rootPrefix}global-border-color);
+  scroll-margin-top: var(#{$rootPrefix}scroll-mt);
+
+  &:target {
+    background-color: rgba(41, 131, 187, 0.06);
+  }
+}
+
+.fi-moments-stamp {
+  padding-top: 0.15rem;
+
+  time {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    color: var(#{$rootPrefix}global-font-secondary-color);
+    font-variant-numeric: tabular-nums;
+
+    .md {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(#{$rootPrefix}global-font-color);
+    }
+
+    .hm {
+      font-size: 0.7rem;
+    }
+  }
+}
+
+.fi-moments-body {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.85;
+  white-space: pre-line;
+  @include overflow-wrap(break-word);
+}
+
+// ---------- 窄屏：单栏，卡片在列表上方，只露几条 ----------
+@media only screen and (max-width: 1100px) {
+  .fi-home-layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .fi-moments-side {
+    position: static;
+    top: auto;
+    // 与 .page 的百分比宽度保持一致，避免卡片比文章列表更宽
+    width: 52%;
+    margin: 0 0 0.85rem;
+
+    // 手机上只显示最近 3 条，每条最多 3 行
+    .fi-moments-item:nth-child(n + 4) {
+      display: none;
+    }
+
+    .fi-moments-text {
+      -webkit-line-clamp: 3;
+    }
+  }
+
+  @media only screen and (max-width: 960px) {
+    .fi-moments-side {
+      width: 80%;
+    }
+  }
+
+  @media only screen and (max-width: 680px) {
+    .fi-moments-side {
+      width: 100%;
+    }
+  }
+}
+
+// ---------- 打印 ----------
+@media only print {
+  .fi-moments-side {
+    display: none;
+  }
+}

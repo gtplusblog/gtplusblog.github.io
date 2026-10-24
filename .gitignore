@@ -3,6 +3,9 @@
 resources/_gen/
 .hugo_build.lock
 
+# Hugo 为主题资源自动生成的编辑器提示文件（每次构建都会重写）
+/assets/jsconfig.json
+
 # OS / Editor
 .DS_Store
 .vscode/

@@ -1,0 +1,33 @@
+{{- /*
+  动态页（content/moments/index.md，type = moments）。
+  上半部分是页面自身的 Markdown 内容，下半部分是按年分组的全部动态。
+*/ -}}
+{{- define "title" -}}
+  {{- cond (.Param "capitalizeTitles") (title .Title) .Title -}}
+  {{- if .Site.Params.withSiteTitle }} {{ .Site.Params.titleDelimiter }} {{ .Site.Title }}{{- end -}}
+{{- end -}}
+
+{{- define "content" -}}
+  {{- $params := partial "function/params.html" -}}
+  {{- $data := partialCached "moments/data.html" "moments" -}}
+  <article class="page single fi-moments-page">
+    <div class="header">
+      <h1 class="single-title animate__animated animate__fadeIn animate__faster">{{- cond (.Param "capitalizeTitles") (title .Title) .Title -}}</h1>
+      {{- with $params.subtitle -}}
+        <p class="single-subtitle animate__animated animate__fadeIn">{{ . | $.RenderString }}</p>
+      {{- end -}}
+      {{- if gt $data.count 0 -}}
+        <p class="fi-moments-summary">
+          共 {{ $data.count }} 条
+          {{- with $data.latest }} · 最近一条 {{ .date.Format "2006-01-02 15:04" }}{{ end -}}
+          {{- with site.GetPage "/posts" }} · <a href="{{ .RelPermalink }}">去读长文</a>{{ end -}}
+        </p>
+      {{- end -}}
+    </div>
+
+    <div class="content" id="content">
+      {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+      {{- partial "moments/list.html" . -}}
+    </div>
+  </article>
+{{- end -}}

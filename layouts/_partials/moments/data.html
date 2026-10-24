@@ -1,0 +1,39 @@
+{{- /*
+  动态（Moments）数据读取。
+
+  数据来源：data/moments/<年份>.json —— 按年分文件，每条一个对象：
+    { "id": "20261024-113900", "date": "2026-10-24T11:39:00+08:00", "text": "……" }
+
+  这里把「所有年份」拍平成一条按时间倒序的列表，供侧栏卡片、
+  /moments/ 页面以及任意自定义模板复用。
+
+  返回值（dict）：
+    entries  []    倒序列表，每项含 id / date(time) / ts(int) / text / year
+    count    int   总条数
+    latest   dict  最新一条（没有时为 nil）
+*/ -}}
+{{- $entries := slice -}}
+{{- with site.Data.moments -}}
+  {{- range $year, $items := . -}}
+    {{- range $items -}}
+      {{- $date := .date | default "" -}}
+      {{- $text := .text | default "" | strings.TrimSpace -}}
+      {{- if and $date $text -}}
+        {{- $time := time.AsTime $date -}}
+        {{- $entries = $entries | append (dict
+          "id" (.id | default ($time.Format "20060102-150405"))
+          "date" $time
+          "ts" $time.Unix
+          "text" $text
+          "year" ($time.Format "2006")
+        ) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $entries = sort $entries "ts" "desc" -}}
+{{- return (dict
+  "entries" $entries
+  "count" (len $entries)
+  "latest" (cond (gt (len $entries) 0) (index $entries 0) nil)
+) -}}

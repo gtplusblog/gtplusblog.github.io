@@ -210,6 +210,17 @@
       # 主页每页显示文章数量
       paginate = 10
 
+  # 动态（Moments）模块
+  # 数据存在 data/moments/<年份>.json，每条只有「时间 + 文本」，
+  # 由博客工作台（studio）或手机 App（APP）写入，Hugo 只负责展示。
+  [moments]
+    # 是否显示动态模块（首页侧栏、文章页侧栏、/moments/ 页面）
+    enable = true
+    # 侧栏卡片标题
+    title = "动态"
+    # 侧栏卡片最多显示几条（手机端由 CSS 再限制为 3 条）
+    limit = 5
+
   # FixIt 0.2.16 | CHANGED Social config about the author
   [social]
     GitHub = ""
@@ -776,6 +787,11 @@
     # aside = "custom/aside.html"
     # profile = "custom/profile.html"
     # footer = "custom/footer.html"
+
+  # FixIt 0.3.12 | NEW 自定义 partial（站点目录 layouts/_partials/ 下的文件）
+  # 文章页左栏在「合集 / 相关文章」之后追加动态卡片
+  [customPartials]
+    aside = ["moments/card.html"]
 
   # FixIt 0.2.15 | NEW 开发者选项
   [dev]
