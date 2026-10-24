@@ -29,9 +29,9 @@
   identifier = "moments"
   pre = ""
   post = ""
-  name = "动态"
+  name = "碎碎念"
   url = "/moments/"
-  title = "短句与碎片"
+  title = "转瞬即逝的念头"
   weight = 2
   [main.params]
     icon = "fa-solid fa-feather-pointed"

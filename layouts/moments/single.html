@@ -1,6 +1,6 @@
 {{- /*
-  动态页（content/moments/index.md，type = moments）。
-  上半部分是页面自身的 Markdown 内容，下半部分是按年分组的全部动态。
+  碎碎念页（content/moments/index.md，type = moments）。
+  标题 + 一句话副标题，下面按年分组列出全部碎碎念。
 */ -}}
 {{- define "title" -}}
   {{- cond (.Param "capitalizeTitles") (title .Title) .Title -}}

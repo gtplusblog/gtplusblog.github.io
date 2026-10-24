@@ -1,0 +1,52 @@
+{{- /*
+  碎碎念 · 首页精简条（标题下、正文前的「前两行」）。
+
+  只显示最近 homeCount 条：第一条最多两行，其余各一行，超出的截断并省略；
+  手机端由 assets/css/_custom.scss 收成一条。
+  完整列表在 /moments/。
+*/ -}}
+{{- $cfg := site.Params.moments | default dict -}}
+{{- if ne $cfg.enable false -}}
+  {{- $data := partialCached "moments/data.html" "moments" -}}
+  {{- if gt $data.count 0 -}}
+    {{- $limit := $cfg.homeCount | default 2 -}}
+    {{- $title := $cfg.title | default "碎碎念" -}}
+    {{- $page := site.GetPage "/moments" -}}
+    {{- $base := "" -}}
+    {{- with $page -}}
+      {{- $base = .RelPermalink -}}
+    {{- end -}}
+    <section class="fi-whisper" aria-label="{{ $title }}">
+      <div class="fi-whisper-head">
+        <span class="fi-whisper-label">
+          {{- dict "Class" "fa-solid fa-feather-pointed fa-fw" | partial "plugin/icon.html" -}}
+          {{ $title }}
+        </span>
+        {{- with $page -}}
+          <a class="fi-whisper-more" href="{{ .RelPermalink }}">全部 {{ $data.count }} 条 ›</a>
+        {{- end -}}
+      </div>
+      <ol class="fi-whisper-list">
+        {{- range first $limit $data.entries -}}
+          {{- $entry := . -}}
+          {{- $href := $base -}}
+          {{- if $base -}}
+            {{- $href = printf "%s#%s" $base $entry.id -}}
+          {{- end -}}
+          <li class="fi-whisper-item">
+            <a class="fi-whisper-link" href="{{ $href }}">
+              <time class="fi-whisper-time" datetime="{{ $entry.date.Format "2006-01-02T15:04:05Z07:00" }}" title="{{ $entry.date.Format "2006-01-02 15:04" }}">
+                {{- if eq $entry.year (now.Format "2006") -}}
+                  {{ $entry.date.Format "01-02 15:04" }}
+                {{- else -}}
+                  {{ $entry.date.Format "2006-01-02" }}
+                {{- end -}}
+              </time>
+              <span class="fi-whisper-text">{{ $entry.text }}</span>
+            </a>
+          </li>
+        {{- end -}}
+      </ol>
+    </section>
+  {{- end -}}
+{{- end -}}

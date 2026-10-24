@@ -1,14 +1,14 @@
 {{- /*
-  动态完整列表（/moments/ 页面）。
+  碎碎念完整列表（/moments/ 页面）。
 
   按年份分组、按时间倒序；每条带 #id 锚点，
-  侧栏卡片里的「10-24 11:39」可以直接跳到对应的一条。
+  首页精简条里的时间可以直接跳到对应的一条。
 */ -}}
 {{- $data := partialCached "moments/data.html" "moments" -}}
 <div class="fi-moments-feed">
   {{- if eq $data.count 0 -}}
     <p class="fi-moments-empty">
-      还没有动态。用博客工作台或手机 App 发一条，它就会出现在这里。
+      还没有碎碎念。用博客工作台或手机 App 发一条，它就会出现在这里。
     </p>
   {{- else -}}
     {{- $year := "" -}}

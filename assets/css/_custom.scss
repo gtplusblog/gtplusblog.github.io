@@ -1,71 +1,42 @@
 // ==============================
-// 自定义样式 · 动态（Moments）
+// 自定义样式 · 碎碎念（Moments）
 // -------------------------------------------------------------------------------------
 // 数据：data/moments/<年份>.json    模板：layouts/_partials/moments/*
-// 首页：layouts/home.html（本文件负责两栏 / 单栏切换）
-// 文章页：由 [params.customPartials] aside 挂到左栏
+// 首页：layouts/home.html 在标题下插入「碎碎念」精简条（.fi-whisper）
+// 全部：/moments/ 页面（.fi-moments-feed）
 // ==============================
 
-// ---------- 首页两栏布局 ----------
-.fi-home-layout {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 1rem;
-  width: 100%;
-
-  // 没有动态时退化为原来的单栏（.page 自己带百分比宽度）
-  &.has-moments {
-    .fi-moments-side {
-      flex: 0 0 300px;
-    }
-  }
+// ---------- 首页：标题下的精简条 ----------
+.fi-whisper {
+  margin: 1.35rem 0 1.9rem;
+  padding: 0.65rem 0 0.75rem;
+  border-top: 1px solid var(#{$rootPrefix}global-border-color);
+  border-bottom: 1px solid var(#{$rootPrefix}global-border-color);
 }
 
-.fi-moments-side {
-  position: sticky;
-  top: calc(#{$header-height} + var(#{$rootPrefix}breadcrumb-height));
-  width: 300px;
-  min-width: 0;
-}
-
-// ---------- 卡片（首页侧栏 + 文章页左栏） ----------
-.fi-moments-card {
-  padding: 0.65rem 0.8rem 0.45rem;
-  border: 1px solid var(#{$rootPrefix}global-border-color);
-  border-radius: $global-border-radius;
-  background-color: darken($global-background-color, 2.5%);
-  @include overflow-wrap(break-word);
-
-  [data-theme='dark'] & {
-    background-color: lighten($global-background-color-dark, 2.5%);
-  }
-}
-
-.fi-moments-head {
+.fi-whisper-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 0.5rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(#{$rootPrefix}global-border-color);
+  margin-bottom: 0.3rem;
 }
 
-.fi-moments-title {
+.fi-whisper-label {
   display: inline-flex;
-  align-items: baseline;
-  gap: 0.35em;
-  font-size: 0.95rem;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 0.84rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 
   i {
-    font-size: 0.8em;
+    font-size: 0.85em;
     color: var(#{$rootPrefix}global-link-hover-color);
   }
 }
 
-.fi-moments-more {
+.fi-whisper-more {
   font-size: 0.72rem;
   color: var(#{$rootPrefix}global-font-secondary-color);
   white-space: nowrap;
@@ -75,48 +46,52 @@
   }
 }
 
-.fi-moments-list {
+.fi-whisper-list {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.fi-moments-item {
-  & + .fi-moments-item {
-    border-top: 1px dashed var(#{$rootPrefix}global-border-color);
-  }
+.fi-whisper-item + .fi-whisper-item {
+  margin-top: 0.15rem;
+}
 
-  .fi-moments-link {
-    display: block;
-    padding: 0.45rem 0 0.35rem;
-    color: inherit;
+.fi-whisper-link {
+  display: grid;
+  grid-template-columns: 5.4rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: baseline;
+  color: inherit;
+  @include overflow-wrap(break-word);
 
-    &:hover .fi-moments-text {
-      color: var(#{$rootPrefix}global-link-hover-color);
-    }
+  &:hover .fi-whisper-text {
+    color: var(#{$rootPrefix}global-link-hover-color);
   }
 }
 
-.fi-moments-text {
+.fi-whisper-time {
+  font-size: 0.74rem;
+  line-height: 1.9;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.fi-whisper-text {
   margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.7;
+  font-size: 0.95rem;
+  line-height: 1.75;
   white-space: pre-line;
+  overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  overflow: hidden;
+  -webkit-line-clamp: 2;
   transition: color 0.2s ease;
 }
 
-.fi-moments-meta {
-  margin-top: 0.15rem;
-  font-size: 0.7rem;
-  color: var(#{$rootPrefix}global-font-secondary-color);
-
-  time {
-    font-variant-numeric: tabular-nums;
-  }
+// 第一条最多两行，后面的各一行，保证整块只有几行
+.fi-whisper-item + .fi-whisper-item .fi-whisper-text {
+  -webkit-line-clamp: 1;
 }
 
 // ---------- /moments/ 页面 ----------
@@ -210,46 +185,35 @@
   @include overflow-wrap(break-word);
 }
 
-// ---------- 窄屏：单栏，卡片在列表上方，只露几条 ----------
-@media only screen and (max-width: 1100px) {
-  .fi-home-layout {
-    flex-direction: column;
-    align-items: center;
-  }
+// ---------- 窄屏 ----------
+@media only screen and (max-width: 680px) {
+  .fi-whisper {
+    margin-bottom: 1.5rem;
 
-  .fi-moments-side {
-    position: static;
-    top: auto;
-    // 与 .page 的百分比宽度保持一致，避免卡片比文章列表更宽
-    width: 52%;
-    margin: 0 0 0.85rem;
-
-    // 手机上只显示最近 3 条，每条最多 3 行
-    .fi-moments-item:nth-child(n + 4) {
+    // 手机上只留最新一条
+    .fi-whisper-item:nth-child(n + 2) {
       display: none;
     }
-
-    .fi-moments-text {
-      -webkit-line-clamp: 3;
-    }
   }
 
-  @media only screen and (max-width: 960px) {
-    .fi-moments-side {
-      width: 80%;
-    }
+  .fi-whisper-link {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: 0.55rem;
   }
 
-  @media only screen and (max-width: 680px) {
-    .fi-moments-side {
-      width: 100%;
-    }
+  .fi-whisper-time {
+    font-size: 0.7rem;
+  }
+
+  .fi-moments-entry {
+    grid-template-columns: 3.2rem minmax(0, 1fr);
+    gap: 0.65rem;
   }
 }
 
 // ---------- 打印 ----------
 @media only print {
-  .fi-moments-side {
+  .fi-whisper {
     display: none;
   }
 }

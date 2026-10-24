@@ -1,10 +1,9 @@
 {{- /*
   本文件覆盖 themes/FixIt/layouts/home.html（FixIt 0.4.0-beta）。
 
-  改动：在首页内容（个人资料 + 文章列表）左侧增加「动态」侧栏。
-        >= 1101px 时与文章列表并排；更窄时整块移到列表上方，
-        只显示最近 3 条（样式见 assets/css/_custom.scss）。
-        没有动态时输出与主题原版完全一致。
+  改动只有一处：在个人资料（标题 / 副标题）之后、正文之前插入「碎碎念」，
+  只显示最近的一两条，其余正文（文章列表）照旧接在下面。
+  没有碎碎念时输出与主题原版完全一致。
 
   升级主题后请与 themes/FixIt/layouts/home.html 做一次 diff 合并。
 */ -}}
@@ -21,11 +20,6 @@
   {{- $posts := .Site.Params.home.posts -}}
   {{- $pages := slice -}}
 
-  {{- /* 动态侧栏是否显示 */ -}}
-  {{- $momentsCfg := site.Params.moments | default dict -}}
-  {{- $moments := partialCached "moments/data.html" "moments" -}}
-  {{- $showMoments := and (ne $momentsCfg.enable false) (gt $moments.count 0) -}}
-
   {{- /* Paginate calculation */ -}}
   {{- if ne $posts.enable false -}}
     {{- $pages = .Site.Store.Get "mainSectionPages" -}}
@@ -41,39 +35,33 @@
     {{- end -}}
   {{- end -}}
 
-  <div class="fi-home-layout{{ if $showMoments }} has-moments{{ end }}">
-    {{- /* Moments */ -}}
-    {{- if $showMoments -}}
-      <div class="fi-moments-side">
-        {{- partial "moments/card.html" . -}}
-      </div>
+  <div class="page home{{ if ne $posts.enable false }} posts{{ end }}">
+    {{- /* Only show profile and content on first page */ -}}
+    {{- if (not $profile.onlyFirstPage) | or (eq $.Paginator.PageNumber 1) -}}
+      {{- /* Profile */ -}}
+      {{- if ne $profile.enable false -}}
+        {{- partial "home/profile.html" . -}}
+      {{- end -}}
+
+      {{- /* 碎碎念：标题下、正文前，只露最近几条 */ -}}
+      {{- partial "moments/strip.html" . -}}
+
+      {{- /* Content */ -}}
+      {{- if .Content -}}
+        <div class="single">
+          <div class="content" id="content">
+            {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+          </div>
+        </div>
+      {{- end -}}
     {{- end -}}
 
-    <div class="page home{{ if ne $posts.enable false }} posts{{ end }}">
-      {{- /* Only show profile and content on first page */ -}}
-      {{- if (not $profile.onlyFirstPage) | or (eq $.Paginator.PageNumber 1) -}}
-        {{- /* Profile */ -}}
-        {{- if ne $profile.enable false -}}
-          {{- partial "home/profile.html" . -}}
-        {{- end -}}
-
-        {{- /* Content */ -}}
-        {{- if .Content -}}
-          <div class="single">
-            <div class="content" id="content">
-              {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
-            </div>
-          </div>
-        {{- end -}}
+    {{- /* Paginate rendering */ -}}
+    {{- if ne $posts.enable false -}}
+      {{- range $pages.Pages -}}
+        {{- .Render "summary" -}}
       {{- end -}}
-
-      {{- /* Paginate rendering */ -}}
-      {{- if ne $posts.enable false -}}
-        {{- range $pages.Pages -}}
-          {{- .Render "summary" -}}
-        {{- end -}}
-        {{- partial "paginator.html" . -}}
-      {{- end -}}
-    </div>
+      {{- partial "paginator.html" . -}}
+    {{- end -}}
   </div>
 {{- end -}}
