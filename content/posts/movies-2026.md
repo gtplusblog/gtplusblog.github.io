@@ -1,17 +1,17 @@
 ---
 title: 观影记录 - 2026
-subtitle:
+subtitle: 
 date: 2026-03-30T10:25:35+08:00
 slug: e20f252
 draft: false
 author:
   name: GUTUN
-  link:
-  email:
-  avatar:
-description:
+  link: 
+  email: 
+  avatar: 
+description: 
 keywords:
-license:
+license: 
 comment: false
 weight: 0
 tags:
@@ -24,12 +24,12 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 hiddenFromRelated: false
 hiddenFromFeed: false
-summary:
+summary: 
 toc: true
 math: false
 lightgallery: false
-password:
-message:
+password: 
+message: 
 
 # See details front matter: https://fixit.lruihao.cn/documentation/content-management/introduction/#front-matter
 ---
@@ -400,3 +400,9 @@ message:
 没有在之前的侯麦电影中看到过像马嘉丽一样拧巴的人，讨厌人群、怕生、渴望爱情但又期待着男人从天上掉下来，和杰哈一起出门但是又性情乖僻地下车。电影的主要剧情就是一老一小两个人给她找男友，马嘉丽的性格傲娇而可爱。
 
 在秋日里，在人生的秋天，人们已经硕果累累，却又还有所期待，可是冬天却即将到来。我在这个夏秋之交刚好看完这部电影，也会对关系的认知有不同的理解。
+
+### 冬天的故事 - 8.5
+
+冬天的故事像是夏天的故事的对照，又夹杂着女主对于信仰和宗教的讨论。
+
+我会觉得冬天的故事相比其余三部会差一点。等我有能力写什么的时候，我希望我能总结一下这四部电影。
