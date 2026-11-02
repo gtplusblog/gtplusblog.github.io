@@ -4,6 +4,7 @@ subtitle:
 date: 2026-09-30T00:10:02+08:00
 slug: 1af2315
 draft: false
+ongoing: true
 author:
   name: GUTUN
   link: 
