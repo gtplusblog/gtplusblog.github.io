@@ -19,8 +19,8 @@
       {{- end -}}
       {{- if gt $data.count 0 -}}
         <p class="fi-records-summary">
-          <span>观影 <strong>{{ $data.movieCount }}</strong> 部{{ if gt $data.movieAverage 0 }} · 平均 {{ printf "%.1f" $data.movieAverage }} 分{{ end }}</span>
-          <span>读书 <strong>{{ $data.bookCount }}</strong> 本{{ if gt $data.bookReading 0 }} · 在读 {{ $data.bookReading }} 本{{ end }}</span>
+          <span>观影 <strong>{{ $data.movieCount }}</strong> 部</span>
+          <span>读书 <strong>{{ $data.bookCount }}</strong> 本</span>
         </p>
       {{- end -}}
     </div>
@@ -45,9 +45,6 @@
               <h3 class="fi-records-group-title">
                 <span>{{ .label }} 年</span>
                 <em>{{ .count }} 部</em>
-                {{- if gt .average 0 -}}
-                  <em>平均 {{ printf "%.1f" .average }} 分</em>
-                {{- end -}}
               </h3>
               <ol class="fi-records-list">
                 {{- range $i, $entry := .entries -}}
@@ -77,9 +74,6 @@
               <h3 class="fi-records-group-title">
                 <span>{{ .label }}</span>
                 <em>{{ .count }} 本</em>
-                {{- if gt .reading 0 -}}
-                  <em>在读 {{ .reading }}</em>
-                {{- end -}}
               </h3>
               <ol class="fi-records-list">
                 {{- range $i, $entry := .entries -}}
@@ -90,9 +84,6 @@
                         {{- $entry.name -}}
                         {{- with $entry.author }}<span class="fi-records-author">· {{ . }}</span>{{ end -}}
                       </span>
-                      {{- if $entry.status -}}
-                        <span class="fi-records-status">{{ $entry.status }}</span>
-                      {{- end -}}
                     </a>
                   </li>
                 {{- end -}}

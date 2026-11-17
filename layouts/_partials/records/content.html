@@ -12,35 +12,6 @@
 {{- $chunks := split .Content `<h3 class="heading-element"` -}}
 {{- $entries := sub (len $chunks) 1 -}}
 
-{{- $sum := 0.0 -}}
-{{- $scored := 0 -}}
-{{- $reading := 0 -}}
-{{- range $i, $chunk := $chunks -}}
-  {{- if $i -}}
-    {{- $close := index (split $chunk "</h3>") 0 -}}
-    {{- $h3 := printf `<h3 class="heading-element"%s</h3>` $close -}}
-    {{- $title := $h3 | plainify -}}
-    {{- if eq $kind "movie" -}}
-      {{- $match := findRE `- ([0-9]+(\.[0-9]+)?|X)$` (strings.TrimSpace $title) 1 -}}
-      {{- with $match -}}
-        {{- $scoreValue := strings.TrimSpace (replaceRE `^- ` "" (index . 0)) -}}
-        {{- if ne $scoreValue "X" -}}
-          {{- $scored = add $scored 1 -}}
-          {{- $sum = add $sum (float $scoreValue) -}}
-        {{- end -}}
-      {{- end -}}
-    {{- else -}}
-      {{- if strings.Contains $title "（在读）" -}}
-        {{- $reading = add $reading 1 -}}
-      {{- end -}}
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
-{{- $average := 0.0 -}}
-{{- if gt $scored 0 -}}
-  {{- $average = div $sum $scored -}}
-{{- end -}}
-
 <div class="fi-record-module">
   <header class="fi-record-module-head">
     <p class="fi-record-kicker">
@@ -49,12 +20,6 @@
     </p>
     <div class="fi-record-stats">
       <span><strong>{{ $entries }}</strong> {{ if eq $kind "movie" }}部{{ else }}本{{ end }}</span>
-      {{- if gt $scored 0 -}}
-        <span><strong>{{ printf "%.1f" $average }}</strong> 平均分</span>
-      {{- end -}}
-      {{- if gt $reading 0 -}}
-        <span><strong>{{ $reading }}</strong> 在读</span>
-      {{- end -}}
     </div>
     {{- with site.GetPage "/records" -}}
       <a class="fi-record-all" href="{{ .RelPermalink }}#{{ if eq $kind "movie" }}movies{{ else }}books{{ end }}">书影音总览</a>
@@ -76,16 +41,7 @@
           <div class="fi-record-main">
             {{ $h3 | safeHTML }}
             {{- if $empty -}}
-              {{- $title := $h3 | plainify -}}
-              <p class="fi-record-empty">
-                {{- if strings.Contains $title "（在读）" -}}
-                  正在读，还没有写笔记。
-                {{- else if strings.Contains $title "（预计下一本）" -}}
-                  计划下一本读这本。
-                {{- else -}}
-                  这一条还没有写正文。
-                {{- end -}}
-              </p>
+              <p class="fi-record-empty">这一条还没有写正文。</p>
             {{- else -}}
               <div class="fi-record-body">{{ $body | safeHTML }}</div>
             {{- end -}}

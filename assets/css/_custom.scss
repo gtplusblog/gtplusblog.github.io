@@ -6,6 +6,9 @@
 // 全部：/moments/ 页面（.fi-moments-feed）
 // ==============================
 
+// 阅读区与 Studio 编辑器预览共用同一套字体栈
+$fi-reading-font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", "SimSun", Georgia, serif;
+
 // ---------- 首页：标题下的精简条 ----------
 .fi-whisper {
   margin: 1.35rem 0 1.9rem;
@@ -414,16 +417,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.fi-records-status {
-  flex: none;
-  padding: 0.05rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.7rem;
-  color: var(#{$rootPrefix}global-link-hover-color);
-  background-color: rgba(41, 131, 187, 0.08);
-  white-space: nowrap;
-}
-
 .fi-records-empty {
   margin-top: 1.5rem;
   font-size: 0.9rem;
@@ -446,6 +439,7 @@
 
 .fi-record-kicker {
   margin: 0;
+  font-family: $global-font-family;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -463,6 +457,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem 1rem;
+  font-family: $global-font-family;
   font-size: 0.75rem;
   color: var(#{$rootPrefix}global-font-secondary-color);
   font-variant-numeric: tabular-nums;
@@ -503,10 +498,10 @@
   min-width: 0;
 }
 
-.fi-record-entry h3.heading-element {
+.single .content .fi-record-entry h3.heading-element {
   margin: 0 0 0.55rem;
-  font-size: 1.16rem;
-  line-height: 1.5;
+  font-size: 1.18rem;
+  line-height: 1.4;
   scroll-margin-top: var(#{$rootPrefix}scroll-mt);
 }
 
@@ -515,8 +510,8 @@
 }
 
 .fi-record-body {
-  font-size: 0.95rem;
-  line-height: 1.85;
+  font-size: 1rem;
+  line-height: 1.95;
   @include overflow-wrap(break-word);
 
   > :first-child {
@@ -530,6 +525,20 @@
     background-color: var(#{$rootPrefix}global-border-color);
     opacity: 0.65;
   }
+}
+
+// 正文段距与预览一致；选择器带上 .single .content，避免被主题的
+// `.single .content p` 规则按优先级盖回去。
+.single .content .fi-record-body p {
+  margin: 0 0 1.25em;
+}
+
+.single .content .fi-record-body > :first-child {
+  margin-top: 0.55rem;
+}
+
+.single .content .fi-record-module > p {
+  margin: 0 0 1.25em;
 }
 
 .fi-record-empty {
@@ -575,7 +584,7 @@
     gap: 0.45rem;
   }
 
-  .fi-record-entry h3.heading-element {
+  .single .content .fi-record-entry h3.heading-element {
     font-size: 1.06rem;
   }
 }
@@ -593,3 +602,70 @@
     text-underline-offset: 2px;
   }
 }
+
+// ---------- 阅读区排版：与 Studio 编辑器预览对齐 ----------
+// 预览用的是衬线字体栈、16px / 1.95 行高、1.25em 段距，这里保持一致。
+.single {
+  .single-title {
+    font-family: $fi-reading-font-family;
+    font-size: clamp(1.75rem, 3vw, 2.375rem);
+    font-weight: 600;
+    line-height: 1.28;
+    letter-spacing: -0.02em;
+  }
+
+  .single-subtitle {
+    font-family: $fi-reading-font-family;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .content {
+    font-family: $fi-reading-font-family;
+    font-size: 1rem;
+    line-height: 1.95;
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    > p {
+      margin: 1.25em 0;
+    }
+
+    > .heading-element {
+      margin-top: 1.9em;
+      margin-bottom: 0.7em;
+      line-height: 1.4;
+    }
+
+    > h1 {
+      font-size: 1.75em;
+    }
+
+    > h2 {
+      font-size: 1.4em;
+    }
+
+    > h3 {
+      font-size: 1.18em;
+    }
+
+    > h4 {
+      font-size: 1.04em;
+    }
+
+    > ul,
+    > ol {
+      margin-block: 1.25em;
+    }
+
+    > table,
+    .table-wrapper table {
+      font-family: $global-font-family;
+      font-size: 0.8rem;
+      line-height: 1.7;
+    }
+  }
+}
+
