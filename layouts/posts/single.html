@@ -2,6 +2,8 @@
   本文件覆盖 themes/FixIt/layouts/posts/single.html（FixIt 0.4.0-beta）。
   改动（3.6）：文章页顶部的「发布日 / 更新日」增加可见文字标签，
              并且只在更新日与发布日不是同一天时才显示「更新于」。
+  改动（3.7）：观影记录 / 读书记录改用条目卡片模块（partials/records/content.html），
+             写作形式不变，仍然是「### 片名 - 评分」。
   升级主题后请与 themes/FixIt/layouts/posts/single.html 做一次 diff 合并。
 */ -}}
 {{- define "title" -}}
@@ -17,6 +19,8 @@
   {{- $showToc := $toc.enable | and (ne $tableOfContents `<nav id="TableOfContents"></nav>`) -}}
   {{- .Store.Set "showToc" $showToc -}}
   {{- $tableOfContents = dict "Content" $tableOfContents "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+  {{- /* 记录类文章：保留原有标题与锚点，只把正文按条目切开渲染 */ -}}
+  {{- $recordKind := partial "records/kind.html" . -}}
 
   <aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label="{{ T "collections" }}">
     {{- /* Collection List */ -}}
@@ -184,7 +188,11 @@
       {{- if not $params.password -}}
         {{- /* Expiration Reminder */ -}}
         {{- partial "single/expiration-reminder.html" . -}}
-        {{- $content -}}
+        {{- if $recordKind -}}
+          {{- partial "records/content.html" (dict "Page" . "Kind" $recordKind "Content" $content) -}}
+        {{- else -}}
+          {{- $content -}}
+        {{- end -}}
       {{- end -}}
     </div>
 

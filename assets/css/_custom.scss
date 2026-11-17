@@ -217,3 +217,379 @@
     display: none;
   }
 }
+
+// ==============================
+// 自定义样式 · 书影音（Records）
+// -------------------------------------------------------------------------------------
+// 模板：layouts/records/single.html（/records/ 汇总页）
+//       layouts/_partials/records/data.html（扫描记录文章）
+//       layouts/_partials/records/content.html（文章内条目模块）
+// 写作形式不变：仍然是「### 片名 - 评分」/「### 书名 - 作者」
+// ==============================
+
+// ---------- /records/ 汇总页 ----------
+.fi-records-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+  margin-top: 0.55rem;
+  font-size: 0.8rem;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+
+  strong {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(#{$rootPrefix}global-font-color);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.fi-records-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1.4rem 0 0.2rem;
+
+  a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35em;
+    padding: 0.32rem 0.75rem;
+    border: 1px solid var(#{$rootPrefix}global-border-color);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    color: var(#{$rootPrefix}global-font-color);
+    transition: border-color 0.2s ease, color 0.2s ease;
+
+    em {
+      font-style: normal;
+      font-size: 0.72rem;
+      color: var(#{$rootPrefix}global-font-secondary-color);
+      font-variant-numeric: tabular-nums;
+    }
+
+    &:hover {
+      border-color: var(#{$rootPrefix}global-link-hover-color);
+      color: var(#{$rootPrefix}global-link-hover-color);
+    }
+  }
+}
+
+.fi-records-section {
+  margin-top: 1.8rem;
+  scroll-margin-top: var(#{$rootPrefix}scroll-mt);
+}
+
+.fi-records-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 2px solid var(#{$rootPrefix}global-border-color);
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 1.12rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .fi-records-section-icon {
+    display: inline-flex;
+    align-items: center;
+    color: var(#{$rootPrefix}global-link-hover-color);
+    font-size: 0.95em;
+  }
+
+  .fi-records-section-meta {
+    font-size: 0.72rem;
+    color: var(#{$rootPrefix}global-font-secondary-color);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+}
+
+.fi-records-group {
+  margin-top: 1.35rem;
+}
+
+.fi-records-group-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0 0 0.25rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(#{$rootPrefix}global-border-color);
+  }
+
+  em {
+    order: 2;
+    font-style: normal;
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: var(#{$rootPrefix}global-font-secondary-color);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+}
+
+.fi-records-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: fi-record;
+}
+
+.fi-records-item {
+  border-bottom: 1px dashed var(#{$rootPrefix}global-border-color);
+  @include overflow-wrap(break-word);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.fi-records-link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  padding: 0.5rem 0.45rem 0.5rem 0;
+  color: inherit;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    color: var(#{$rootPrefix}global-link-hover-color);
+    background-color: rgba(41, 131, 187, 0.06);
+
+    .fi-records-name {
+      color: var(#{$rootPrefix}global-link-hover-color);
+    }
+  }
+}
+
+.fi-records-no {
+  flex: none;
+  width: 2.1rem;
+  font-size: 0.7rem;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.fi-records-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.6;
+  transition: color 0.15s ease;
+}
+
+.fi-records-author {
+  margin-left: 0.55em;
+  font-size: 0.78em;
+  font-weight: 400;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+}
+
+.fi-records-score {
+  flex: none;
+  min-width: 2.4rem;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid var(#{$rootPrefix}global-border-color);
+  border-radius: 999px;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.fi-records-status {
+  flex: none;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  color: var(#{$rootPrefix}global-link-hover-color);
+  background-color: rgba(41, 131, 187, 0.08);
+  white-space: nowrap;
+}
+
+.fi-records-empty {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+}
+
+// ---------- 文章内的记录模块（.fi-record-module） ----------
+.fi-record-module {
+  margin-top: 0.4rem;
+}
+
+.fi-record-module-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0 0.75rem;
+  border-bottom: 2px solid var(#{$rootPrefix}global-border-color);
+}
+
+.fi-record-kicker {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(#{$rootPrefix}global-font-color);
+
+  span {
+    margin-left: 0.35em;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(#{$rootPrefix}global-font-secondary-color);
+  }
+}
+
+.fi-record-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  font-size: 0.75rem;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+  font-variant-numeric: tabular-nums;
+
+  strong {
+    margin-right: 0.1em;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(#{$rootPrefix}global-font-color);
+  }
+}
+
+.fi-record-list {
+  margin-top: 0.35rem;
+}
+
+.fi-record-entry {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  gap: 0.65rem;
+  padding: 1.45rem 0 1.55rem;
+  border-bottom: 1px dashed var(#{$rootPrefix}global-border-color);
+
+  &:last-child {
+    border-bottom: 0;
+    padding-bottom: 0.8rem;
+  }
+}
+
+.fi-record-no {
+  padding-top: 0.45rem;
+  font-size: 0.7rem;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.fi-record-main {
+  min-width: 0;
+}
+
+.fi-record-entry h3.heading-element {
+  margin: 0 0 0.55rem;
+  font-size: 1.16rem;
+  line-height: 1.5;
+  scroll-margin-top: var(#{$rootPrefix}scroll-mt);
+}
+
+.fi-record-entry h3:target {
+  color: var(#{$rootPrefix}global-link-hover-color);
+}
+
+.fi-record-body {
+  font-size: 0.95rem;
+  line-height: 1.85;
+  @include overflow-wrap(break-word);
+
+  > :first-child {
+    margin-top: 0.55rem;
+  }
+
+  hr {
+    margin: 1.4rem 0 0;
+    border: 0;
+    height: 1px;
+    background-color: var(#{$rootPrefix}global-border-color);
+    opacity: 0.65;
+  }
+}
+
+.fi-record-empty {
+  margin: 0;
+  font-size: 0.86rem;
+  font-style: italic;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+}
+
+// ---------- 窄屏 ----------
+@media only screen and (max-width: 680px) {
+  .fi-records-section-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .fi-records-link {
+    gap: 0.5rem;
+  }
+
+  .fi-records-no {
+    width: 1.8rem;
+  }
+
+  .fi-records-name {
+    font-size: 0.88rem;
+  }
+
+  .fi-records-score {
+    min-width: 2.1rem;
+    padding: 0.05rem 0.35rem;
+  }
+
+  .fi-record-module-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .fi-record-entry {
+    grid-template-columns: 1.9rem minmax(0, 1fr);
+    gap: 0.45rem;
+  }
+
+  .fi-record-entry h3.heading-element {
+    font-size: 1.06rem;
+  }
+}
+
+// 文章内记录模块右上角的「书影音总览」入口
+.fi-record-all {
+  flex: none;
+  font-size: 0.72rem;
+  color: var(#{$rootPrefix}global-font-secondary-color);
+  white-space: nowrap;
+
+  &:hover {
+    color: var(#{$rootPrefix}global-link-hover-color);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}

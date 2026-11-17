@@ -1,0 +1,12 @@
+{{- /*
+  判断一篇文章是不是「观影记录 / 读书记录」。
+  约定：标题分别以「观影记录」「读书记录」开头（与现有文章的命名一致）。
+  返回 "movie" / "book" / ""。
+*/ -}}
+{{- $kind := "" -}}
+{{- if strings.HasPrefix .Title "观影记录" -}}
+  {{- $kind = "movie" -}}
+{{- else if strings.HasPrefix .Title "读书记录" -}}
+  {{- $kind = "book" -}}
+{{- end -}}
+{{- return $kind -}}

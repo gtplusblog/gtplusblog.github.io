@@ -26,13 +26,24 @@
     type = ""
 
 [[main]]
+  identifier = "records"
+  pre = ""
+  post = ""
+  name = "书影音"
+  url = "/records/"
+  title = "看过的电影，读过的书"
+  weight = 2
+  [main.params]
+    icon = "fa-solid fa-book-open"
+
+[[main]]
   identifier = "moments"
   pre = ""
   post = ""
   name = "碎碎念"
   url = "/moments/"
   title = "转瞬即逝的念头"
-  weight = 2
+  weight = 3
   [main.params]
     icon = "fa-solid fa-feather-pointed"
 
@@ -43,7 +54,7 @@
   name = "分类"
   url = "/categories/"
   title = ""
-  weight = 3
+  weight = 4
   [main.params]
     icon = "fa-solid fa-th"
 
@@ -54,6 +65,6 @@
   name = "标签"
   url = "/tags/"
   title = ""
-  weight = 4
+  weight = 5
   [main.params]
     icon = "fa-solid fa-tags"

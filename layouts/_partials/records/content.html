@@ -1,0 +1,97 @@
+{{- /*
+  记录类文章的正文模块化。
+
+  输入 dict：Page / Kind（movie|book）/ Content（已经过 function/content.html 处理）
+  输出：概览条 + 按原顺序排列的条目卡片。
+
+  条目仍然来自原来渲染好的 HTML，只在 <h3> 处切开，
+  所以标题 id、脚注、链接和锚点都保持原样。
+*/ -}}
+{{- $page := .Page -}}
+{{- $kind := .Kind -}}
+{{- $chunks := split .Content `<h3 class="heading-element"` -}}
+{{- $entries := sub (len $chunks) 1 -}}
+
+{{- $sum := 0.0 -}}
+{{- $scored := 0 -}}
+{{- $reading := 0 -}}
+{{- range $i, $chunk := $chunks -}}
+  {{- if $i -}}
+    {{- $close := index (split $chunk "</h3>") 0 -}}
+    {{- $h3 := printf `<h3 class="heading-element"%s</h3>` $close -}}
+    {{- $title := $h3 | plainify -}}
+    {{- if eq $kind "movie" -}}
+      {{- $match := findRE `- ([0-9]+(\.[0-9]+)?|X)$` (strings.TrimSpace $title) 1 -}}
+      {{- with $match -}}
+        {{- $scoreValue := strings.TrimSpace (replaceRE `^- ` "" (index . 0)) -}}
+        {{- if ne $scoreValue "X" -}}
+          {{- $scored = add $scored 1 -}}
+          {{- $sum = add $sum (float $scoreValue) -}}
+        {{- end -}}
+      {{- end -}}
+    {{- else -}}
+      {{- if strings.Contains $title "（在读）" -}}
+        {{- $reading = add $reading 1 -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $average := 0.0 -}}
+{{- if gt $scored 0 -}}
+  {{- $average = div $sum $scored -}}
+{{- end -}}
+
+<div class="fi-record-module">
+  <header class="fi-record-module-head">
+    <p class="fi-record-kicker">
+      {{- if eq $kind "movie" -}}观影记录{{- else -}}读书记录{{- end -}}
+      <span>· 按记录顺序</span>
+    </p>
+    <div class="fi-record-stats">
+      <span><strong>{{ $entries }}</strong> {{ if eq $kind "movie" }}部{{ else }}本{{ end }}</span>
+      {{- if gt $scored 0 -}}
+        <span><strong>{{ printf "%.1f" $average }}</strong> 平均分</span>
+      {{- end -}}
+      {{- if gt $reading 0 -}}
+        <span><strong>{{ $reading }}</strong> 在读</span>
+      {{- end -}}
+    </div>
+    {{- with site.GetPage "/records" -}}
+      <a class="fi-record-all" href="{{ .RelPermalink }}#{{ if eq $kind "movie" }}movies{{ else }}books{{ end }}">书影音总览</a>
+    {{- end -}}
+  </header>
+
+  {{- index $chunks 0 | safeHTML -}}
+
+  <div class="fi-record-list">
+    {{- range $i, $chunk := $chunks -}}
+      {{- if $i -}}
+        {{- $parts := split $chunk "</h3>" -}}
+        {{- $close := index $parts 0 -}}
+        {{- $body := index $parts 1 -}}
+        {{- $h3 := printf `<h3 class="heading-element"%s</h3>` $close -}}
+        {{- $empty := eq (strings.TrimSpace (plainify $body)) "" -}}
+        <article class="fi-record-entry">
+          <span class="fi-record-no" aria-hidden="true">{{ printf "%02d" $i }}</span>
+          <div class="fi-record-main">
+            {{ $h3 | safeHTML }}
+            {{- if $empty -}}
+              {{- $title := $h3 | plainify -}}
+              <p class="fi-record-empty">
+                {{- if strings.Contains $title "（在读）" -}}
+                  正在读，还没有写笔记。
+                {{- else if strings.Contains $title "（预计下一本）" -}}
+                  计划下一本读这本。
+                {{- else -}}
+                  这一条还没有写正文。
+                {{- end -}}
+              </p>
+            {{- else -}}
+              <div class="fi-record-body">{{ $body | safeHTML }}</div>
+            {{- end -}}
+          </div>
+        </article>
+      {{- end -}}
+    {{- end -}}
+  </div>
+</div>

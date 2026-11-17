@@ -1,0 +1,142 @@
+{{- /*
+  书影音模块的数据层。
+
+  不改变写作形式：文章仍然是「### 片名 - 评分」或「### 书名 - 作者」的
+  长 Markdown。这里从每篇文章渲染后的 HTML 里按 h3 切分条目，
+  只提取列表需要的字段（标题 / 评分 / 作者 / 在读状态 / 锚点）。
+
+  返回：
+    movies / books  按文章日期升序排列的分组，每组带条目数组
+    movieCount / bookCount / movieAverage / bookReading / bookPlanned
+*/ -}}
+{{- $pages := sort (where site.RegularPages "Section" "posts") "Date" "asc" -}}
+{{- $movies := slice -}}
+{{- $books := slice -}}
+
+{{- range $pages -}}
+  {{- $kind := partial "records/kind.html" . -}}
+
+  {{- if $kind -}}
+    {{- $page := . -}}
+    {{- $chunks := split .Content `<h3 class="heading-element"` -}}
+    {{- $entries := slice -}}
+    {{- $sum := 0.0 -}}
+    {{- $scored := 0 -}}
+    {{- $reading := 0 -}}
+    {{- $planned := 0 -}}
+
+    {{- range $i, $chunk := $chunks -}}
+      {{- if $i -}}
+        {{- $parts := split $chunk "</h3>" -}}
+        {{- $close := index $parts 0 -}}
+        {{- $body := index $parts 1 -}}
+        {{- $idMatch := findRE `id="[^"]+"` $close 1 -}}
+        {{- $id := "" -}}
+        {{- with $idMatch -}}
+          {{- $id = replaceRE `id="|"` "" (index . 0) -}}
+        {{- end -}}
+        {{- $h3 := printf `<h3 class="heading-element"%s</h3>` $close -}}
+        {{- $title := $h3 | plainify | replaceRE `\s+` " " | strings.TrimSpace -}}
+        {{- $name := $title -}}
+        {{- $score := "" -}}
+        {{- $author := "" -}}
+        {{- $status := "" -}}
+
+        {{- if eq $kind "movie" -}}
+          {{- $scoreMatch := findRE `- ([0-9]+(\.[0-9]+)?|X)$` $title 1 -}}
+          {{- with $scoreMatch -}}
+            {{- $score = strings.TrimSpace (replaceRE `^- ` "" (index . 0)) -}}
+            {{- $name = strings.TrimSpace (replaceRE `- ([0-9]+(\.[0-9]+)?|X)$` "" $title) -}}
+            {{- if ne $score "X" -}}
+              {{- $scored = add $scored 1 -}}
+              {{- $sum = add $sum (float $score) -}}
+            {{- end -}}
+          {{- end -}}
+        {{- else -}}
+          {{- if strings.Contains $title "（在读）" -}}
+            {{- $status = "在读" -}}
+            {{- $reading = add $reading 1 -}}
+            {{- $name = strings.TrimSpace (replaceRE `（在读）` "" $name) -}}
+          {{- else if strings.Contains $title "（预计下一本）" -}}
+            {{- $status = "预计下一本" -}}
+            {{- $planned = add $planned 1 -}}
+            {{- $name = strings.TrimSpace (replaceRE `（预计下一本）` "" $name) -}}
+          {{- end -}}
+          {{- $segments := split $name " - " -}}
+          {{- if gt (len $segments) 1 -}}
+            {{- $last := sub (len $segments) 1 -}}
+            {{- $author = index $segments $last -}}
+            {{- $name = delimit (first $last $segments) " - " -}}
+          {{- end -}}
+          {{- $name = strings.TrimSpace (replaceRE `\*` "" $name) -}}
+        {{- end -}}
+
+        {{- $entries = $entries | append (dict
+          "id" $id
+          "title" $title
+          "name" $name
+          "score" $score
+          "author" $author
+          "status" $status
+          "url" (printf "%s#%s" $page.RelPermalink $id)
+        ) -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- $label := strings.TrimPrefix (cond (eq $kind "movie") "观影记录 - " "读书记录 - ") $page.Title -}}
+    {{- $average := 0.0 -}}
+    {{- if gt $scored 0 -}}
+      {{- $average = div $sum $scored -}}
+    {{- end -}}
+    {{- $group := dict
+      "page" $page
+      "kind" $kind
+      "label" $label
+      "entries" $entries
+      "count" (len $entries)
+      "sum" $sum
+      "scored" $scored
+      "average" $average
+      "reading" $reading
+      "planned" $planned
+    -}}
+    {{- if eq $kind "movie" -}}
+      {{- $movies = $movies | append $group -}}
+    {{- else -}}
+      {{- $books = $books | append $group -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $movieCount := 0 -}}
+{{- $movieSum := 0.0 -}}
+{{- $movieScored := 0 -}}
+{{- range $movies -}}
+  {{- $movieCount = add $movieCount .count -}}
+  {{- $movieSum = add $movieSum .sum -}}
+  {{- $movieScored = add $movieScored .scored -}}
+{{- end -}}
+{{- $movieAverage := 0.0 -}}
+{{- if gt $movieScored 0 -}}
+  {{- $movieAverage = div $movieSum $movieScored -}}
+{{- end -}}
+
+{{- $bookCount := 0 -}}
+{{- $bookReading := 0 -}}
+{{- $bookPlanned := 0 -}}
+{{- range $books -}}
+  {{- $bookCount = add $bookCount .count -}}
+  {{- $bookReading = add $bookReading .reading -}}
+  {{- $bookPlanned = add $bookPlanned .planned -}}
+{{- end -}}
+
+{{- return (dict
+  "movies" $movies
+  "books" $books
+  "movieCount" $movieCount
+  "bookCount" $bookCount
+  "movieAverage" $movieAverage
+  "bookReading" $bookReading
+  "bookPlanned" $bookPlanned
+  "count" (add $movieCount $bookCount)
+) -}}

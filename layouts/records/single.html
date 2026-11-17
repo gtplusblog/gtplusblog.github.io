@@ -1,0 +1,108 @@
+{{- /*
+  书影音页（content/records/index.md）。
+  数据来自 partials/records/data.html：扫描「观影记录 / 读书记录」文章，
+  把每篇的 ### 条目按原顺序排成可点的清单。
+*/ -}}
+{{- define "title" -}}
+  {{- cond (.Param "capitalizeTitles") (title .Title) .Title -}}
+  {{- if .Site.Params.withSiteTitle }} {{ .Site.Params.titleDelimiter }} {{ .Site.Title }}{{- end -}}
+{{- end -}}
+
+{{- define "content" -}}
+  {{- $params := partial "function/params.html" -}}
+  {{- $data := partial "records/data.html" "records" -}}
+  <article class="page single fi-records-page">
+    <div class="header">
+      <h1 class="single-title animate__animated animate__fadeIn animate__faster">{{- cond (.Param "capitalizeTitles") (title .Title) .Title -}}</h1>
+      {{- with $params.subtitle -}}
+        <p class="single-subtitle animate__animated animate__fadeIn">{{ . | $.RenderString }}</p>
+      {{- end -}}
+      {{- if gt $data.count 0 -}}
+        <p class="fi-records-summary">
+          <span>观影 <strong>{{ $data.movieCount }}</strong> 部{{ if gt $data.movieAverage 0 }} · 平均 {{ printf "%.1f" $data.movieAverage }} 分{{ end }}</span>
+          <span>读书 <strong>{{ $data.bookCount }}</strong> 本{{ if gt $data.bookReading 0 }} · 在读 {{ $data.bookReading }} 本{{ end }}</span>
+        </p>
+      {{- end -}}
+    </div>
+
+    <div class="content" id="content">
+      {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+
+      {{- if gt $data.count 0 -}}
+        <nav class="fi-records-tabs" aria-label="书影音分类">
+          <a href="#movies">观影记录 <em>{{ $data.movieCount }}</em></a>
+          <a href="#books">读书记录 <em>{{ $data.bookCount }}</em></a>
+        </nav>
+
+        <section class="fi-records-section" id="movies">
+          <header class="fi-records-section-head">
+            <h2><span class="fi-records-section-icon">{{ dict "Class" "fa-solid fa-film" | partial "plugin/icon.html" }}</span>观影记录</h2>
+            <span class="fi-records-section-meta">{{ $data.movieCount }} 部 · 按观看顺序</span>
+          </header>
+
+          {{- range $data.movies -}}
+            <div class="fi-records-group">
+              <h3 class="fi-records-group-title">
+                <span>{{ .label }} 年</span>
+                <em>{{ .count }} 部</em>
+                {{- if gt .average 0 -}}
+                  <em>平均 {{ printf "%.1f" .average }} 分</em>
+                {{- end -}}
+              </h3>
+              <ol class="fi-records-list">
+                {{- range $i, $entry := .entries -}}
+                  <li class="fi-records-item">
+                    <a class="fi-records-link" href="{{ $entry.url }}">
+                      <span class="fi-records-no">{{ printf "%02d" (add $i 1) }}</span>
+                      <span class="fi-records-name">{{ $entry.name }}</span>
+                      {{- with $entry.score -}}
+                        <span class="fi-records-score">{{ . }}</span>
+                      {{- end -}}
+                    </a>
+                  </li>
+                {{- end -}}
+              </ol>
+            </div>
+          {{- end -}}
+        </section>
+
+        <section class="fi-records-section" id="books">
+          <header class="fi-records-section-head">
+            <h2><span class="fi-records-section-icon">{{ dict "Class" "fa-solid fa-book" | partial "plugin/icon.html" }}</span>读书记录</h2>
+            <span class="fi-records-section-meta">{{ $data.bookCount }} 本 · 按阅读顺序</span>
+          </header>
+
+          {{- range $data.books -}}
+            <div class="fi-records-group">
+              <h3 class="fi-records-group-title">
+                <span>{{ .label }}</span>
+                <em>{{ .count }} 本</em>
+                {{- if gt .reading 0 -}}
+                  <em>在读 {{ .reading }}</em>
+                {{- end -}}
+              </h3>
+              <ol class="fi-records-list">
+                {{- range $i, $entry := .entries -}}
+                  <li class="fi-records-item">
+                    <a class="fi-records-link" href="{{ $entry.url }}">
+                      <span class="fi-records-no">{{ printf "%02d" (add $i 1) }}</span>
+                      <span class="fi-records-name">
+                        {{- $entry.name -}}
+                        {{- with $entry.author }}<span class="fi-records-author">· {{ . }}</span>{{ end -}}
+                      </span>
+                      {{- if $entry.status -}}
+                        <span class="fi-records-status">{{ $entry.status }}</span>
+                      {{- end -}}
+                    </a>
+                  </li>
+                {{- end -}}
+              </ol>
+            </div>
+          {{- end -}}
+        </section>
+      {{- else -}}
+        <p class="fi-records-empty">还没有观影或读书记录。写一篇标题以「观影记录」或「读书记录」开头的文章，它就会出现在这里。</p>
+      {{- end -}}
+    </div>
+  </article>
+{{- end -}}
