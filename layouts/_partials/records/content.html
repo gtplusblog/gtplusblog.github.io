@@ -35,6 +35,10 @@
         {{- $close := index $parts 0 -}}
         {{- $body := index $parts 1 -}}
         {{- $h3 := printf `<h3 class="heading-element"%s</h3>` $close -}}
+        {{- if eq $kind "book" -}}
+          {{- /* 标题前的「（在读）/（预计下一本）」是状态标记，表格里已经不再展示；只从标题文字里去掉，不动锚点 id */ -}}
+          {{- $h3 = replaceRE `(heading-element[^>]*>)\s*<span>\s*（(在读|预计下一本)）` "$1<span>" $h3 -}}
+        {{- end -}}
         {{- $empty := eq (strings.TrimSpace (plainify $body)) "" -}}
         <article class="fi-record-entry">
           <span class="fi-record-no" aria-hidden="true">{{ printf "%02d" $i }}</span>
