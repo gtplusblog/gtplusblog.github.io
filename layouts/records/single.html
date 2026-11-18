@@ -84,6 +84,9 @@
                         {{- $entry.name -}}
                         {{- with $entry.author }}<span class="fi-records-author">· {{ . }}</span>{{ end -}}
                       </span>
+                      {{- if $entry.status -}}
+                        <span class="fi-records-status">{{ $entry.status }}</span>
+                      {{- end -}}
                     </a>
                   </li>
                 {{- end -}}

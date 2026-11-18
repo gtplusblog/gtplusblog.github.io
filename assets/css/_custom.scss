@@ -417,6 +417,17 @@ $fi-reading-font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "S
   font-variant-numeric: tabular-nums;
 }
 
+.fi-records-status {
+  flex: none;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-family: $global-font-family;
+  font-size: 0.7rem;
+  color: var(#{$rootPrefix}global-link-hover-color);
+  background-color: rgba(41, 131, 187, 0.08);
+  white-space: nowrap;
+}
+
 .fi-records-empty {
   margin-top: 1.5rem;
   font-size: 0.9rem;
